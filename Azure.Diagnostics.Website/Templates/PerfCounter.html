@@ -1,0 +1,73 @@
+﻿<h2 class="sub-header">Performance</h2>
+
+
+<div class="row">
+
+    <div class="col-md-3">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#counterModal">
+            Select From Available Counters
+        </button>
+    </div>
+</div>
+<div class="row" ng-show="selectedCounters.length > 0">
+    <div class="col-md-3">
+        <ul class="pagination">
+            <li><a ng-click="prevClick()" href="">&laquo; Prev Interval</a></li>
+            <li><a ng-click="nextClick()" href="">Next Interval &raquo;</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" style="padding-top: 5px;">Interval</label>
+            <div class="col-sm-5">
+                <select ng-model="interval" ng-change="updateInterval()" id="interval-dropdown" class="form-control">
+                    <option value="60">1 Hour</option>
+                    <option value="360">6 Hours</option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default" ng-click="refresh()">
+                    <i class="icon-refresh"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" ng-show="selectedCounters.length > 0">
+    <p>Current range <span ng-bind="interval == 60 ? '1 hour' : '6 hours'"></span> up to <span ng-bind="endDate"></span></p>
+</div>
+<div class="modal fade" id="counterModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Select Counters</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Current Counters</h4>
+                <div ng-repeat="perf in perfCounters">
+                    <label>
+                        <input type="checkbox" checklist-model="selectedCounters" checklist-value="perf.counterSpecifier">
+                        {{perf.counterSpecifier}}
+                    </label>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="updateCounters()" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div ng-repeat="counter in counters">
+    <h3>{{counter.name}}</h3>
+    <div>
+        <div google-chart chart="counter" style=""></div>
+
+    </div>
+</div>
