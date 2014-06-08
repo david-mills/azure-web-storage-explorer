@@ -1,4 +1,4 @@
-azure-web-storage-explorer
-==========================
+azure-web-explorer
+==================
 
-Web based site to see storage/diagnostics/performance data in Windows Azure
+Web-based for viewing storage, diagnostic and performance information about an azure deployment
