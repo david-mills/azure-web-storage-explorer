@@ -1,0 +1,148 @@
+﻿<h2 class="sub-header" ng-bind="deployment.roleName"></h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Instance Id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in deployment.instances">
+                <td>{{row.id}}</td>
+                <td>
+                    <button type="button" class="btn btn-default" ng-click="viewCurrentRow(row)" data-toggle="modal" data-target="#diagnosticsModal">View/Edit Diagnostics Configuration</button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="diagnosticsModal">
+    <div class="modal-dialog modal-dialog-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" ng-bind="currentRow.id"></h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <form editable-form name="tableform" class="form-horizontal">
+                        <fieldset>
+                            <legend>Settings</legend>
+                            <div class="form-group"  ng-class="{'has-warning': tableform.oqimb.$error.required || tableform.oqimb.$error.pattern}">
+                                <label for="" class="col-sm-4 control-label">OverallQuotaInMB</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.overallQuotaInMB" e-name="oqimb" e-ng-required="true"  e-ng-pattern="numberPattern">
+                                        {{ currentRow.data.overallQuotaInMB }}
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Logs</legend>
+
+                            <div class="form-group" ng-class="{'has-warning': tableform.lllf.$error.required || tableform.lllf.$error.pattern}">
+                                <label for="" class="col-sm-4 control-label">LogLevelFilter</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.logs.scheduledTransferLogLevelFilter" e-name="lllf" e-ng-required="true" e-ng-pattern="numberPattern">
+                                        {{ currentRow.data.logs.scheduledTransferLogLevelFilter }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-warning': tableform.ltp.$error.required || tableform.ltp.$error.pattern}">
+                                <label for="" class="col-sm-4 control-label">TransferPeriod</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.logs.scheduledTransferPeriod" e-name="ltp" e-ng-required="true" e-ng-pattern="timePattern">
+                                        {{ currentRow.data.logs.scheduledTransferPeriod }}
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Performance</legend>
+
+                            <div class="form-group" ng-class="{'has-warning': tableform.pstp.$error.required || tableform.pstp.$error.pattern}">
+                                <label for="" class="col-sm-4 control-label">TransferPeriod</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.performanceCounters.scheduledTransferPeriod"  e-name="pstp" e-ng-required="true" e-ng-pattern="timePattern">
+                                        {{ currentRow.data.performanceCounters.scheduledTransferPeriod }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-warning': tableform.pbqimb.$error.required || tableform.pbqimb.$error.pattern}">
+                                <label for="" class="col-sm-4 control-label">BufferQuotaInMB</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.performanceCounters.bufferQuotaInMB"  e-name="pbqimb" e-ng-required="true" e-ng-pattern="numberPattern">
+                                        {{ currentRow.data.performanceCounters.bufferQuotaInMB }}
+                                    </span>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                    <label for="" class="">DataSources</label>
+                                </div>
+                                <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                <th>Counter</th>
+                                                <th width="20%">Rate (s)</th>
+                                                <th ng-show="tableform.$visible"></th>
+                                                </tr>
+                                            </thead>
+                                            <tr ng-repeat="counter in currentRow.data.performanceCounters.dataSources">
+                                                <td ng-class="{'has-warning': tableform.{{'counter' + $index}}.$error.required }">
+                                                    <span editable-text="counter.counterSpecifier" e-form="tableform" e-ng-required="true" e-name="{{'counter' + $index}}">
+                                                        {{ counter.counterSpecifier}}
+                                                    </span>
+                                                </td>
+                                                <td ng-class="{'has-warning': tableform.{{'sample' + $index}}.$error.required || tableform.{{'sample' + $index}}.$error.pattern }">
+                                                    <span editable-text="counter.sampleRate" e-form="tableform" e-ng-required="true" e-ng-pattern="timePattern"  e-name="{{'sample' + $index}}">{{ counter.sampleRate }}
+                                                    </span>
+                                                </td>
+                                                <td ng-show="tableform.$visible">
+                                                    <button type="button" style="margin: 5px 10px 0 0;" ng-click="removeCounterFromCurrent($index)" class="close center-block">×</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div style="margin-left:10px;">
+                                            <button type="button" ng-show="tableform.$visible" ng-click="addCounterToCurrent()" class="btn btn-primary btn-xs">Add</button>
+                                        </div>
+                                </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Windows Event Log</legend>
+
+                            <div class="form-group" ng-class="{'has-warning': tableform.wellf.$error.required || tableform.wellf.$error.pattern}">
+                                <label for="" class="col-sm-3 control-label">LogLevelFilter</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.windowsEventLog.scheduledTransferLogLevelFilter" e-name="wellf" e-ng-required="true" e-ng-pattern="numberPattern">
+                                        {{ currentRow.data.windowsEventLog.scheduledTransferLogLevelFilter }}
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="form-group" ng-class="{'has-warning': tableform.weltp.$error.required || tableform.weltp.$error.pattern}">
+                                <label for="" class="col-sm-3 control-label">Transfer Period</label>
+                                <div class="col-sm-2 control-label">
+                                    <span editable-text="currentRow.data.windowsEventLog.scheduledTransferPeriod"  e-name="weltp" e-ng-required="true" e-ng-pattern="timePattern">
+                                        {{ currentRow.data.windowsEventLog.scheduledTransferPeriod }}
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="tableform.$cancel()" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"  ng-show="!tableform.$visible" ng-click="tableform.$show()" >Edit</button>
+                <button type="submit" class="btn btn-primary"  ng-show="tableform.$visible" data-dismiss="modal" ng-click="tableform.$save();updateInstance();" ng-disabled="tableform.$invalid">Apply To Instance</button>
+                <button type="submit" class="btn btn-primary"  ng-show="tableform.$visible" data-dismiss="modal" ng-click="tableform.$save();updateAllInstances();" ng-disabled="tableform.$invalid">Apply To All Instance</button>
+
+            </div>
+        </div>
+    </div>
+</div>
